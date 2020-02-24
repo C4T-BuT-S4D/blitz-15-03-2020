@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+  	<title>Flags.Shop</title>
+		<meta charset="utf-8">
+		<meta name="description" content="There you can buy some flags.">
+		<link rel="stylesheet" href="../static/style.css">
+		<link rel="stylesheet" href="../static/alertify.css">
+		<link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+	</head>
+<body>
+	<header>
+		<a href="lk">
+			<div class="header-img">
+			</div>
+		</a>
+		<div class="nav-menu">
+			<span class="nav-item city">
+					<a href="users">Users</a>
+			</span>
+			<span class="nav-item shops">
+					<a href="flags">Flags</a>
+			</span>
+			<span class="nav-item buyers">
+					<a href="comment_board">Comment Board</a>
+			</span>
+			<span class="nav-item info">
+					<a href="report_board">Report Board</a>
+			</span>
+		</div>
+	</header>
+	<main>
+		<div class="auth" id="auth">
+			
+		</div> 
+
+		<div class="add-form">
+				<p>
+					<span><b>Name</b></span>
+					<input class="item-send-form data-field" id="input-name" type="text" placeholder="Flex hoody by DarkSide" size="25">
+				</p>
+				<p>
+					<span><b>Description</b></span>
+					<input class="item-send-form data-field" id="input-description" type="text" placeholder="100% cotton" size="25">
+				</p>
+				<p>
+					<span><b>In stock</b></span>
+					<input class="item-send-form data-field" id="input-in_stock" type="text" placeholder="10" size="5">
+				</p>
+				<p>
+					<span><b>Cost</b></span>
+					<input class="item-send-form data-field" id="input-cost" type="text" placeholder="1000" size="5">
+				</p>
+				<p>
+					<input class="myButton" type="submit" onClick="add_flag()" value="Add"></input>
+				</p>
+			</div>
+		<div class="items">
+			<table class="table" id="flags_table">
+				<caption><em>My merchandise</em></caption>
+				<thead>
+					<tr>
+						<th style="width:360px">Name</th>
+						<th style="width:100px">Cost $</th>
+						<th style="width:40px">in stock</th>
+					</tr>
+				</thead>
+				<tbody>
+
+                </tbody>
+			</table>
+		</div>
+		</div>
+	</main>
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<script src="../static/alertify.js"></script>
+		<script src="../static/show_my_flags.js"></script>
+</body>
+</html>
