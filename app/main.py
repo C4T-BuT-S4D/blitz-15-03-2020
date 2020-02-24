@@ -21,7 +21,6 @@ from app.settings import load_config, PACKAGE_NAME
 from app.ws import WsHandler
 
 
-log = logging.getLogger(__name__)
 
 
 async def init_mongo(app, loop):
@@ -124,13 +123,11 @@ async def init_app(config, loop):
         DBAuthorizationPolicy(db_pool)
     )
 
-    log.debug(app['config'])
-
     return app
 
 def main(configpath):
     config = load_config(configpath)
-    logging.basicConfig(level=logging.DEBUG)
+    #logging.basicConfig(level=logging.DEBUG)
     loop = asyncio.get_event_loop()
     app = loop.run_until_complete(init_app(config, loop))
     #app = init_app(config, loop)
