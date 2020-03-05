@@ -1,6 +1,8 @@
+import base64
 import json
 
 import websocket
+from Crypto.Cipher import DES
 from checklib import *
 
 PORT = 9090
@@ -31,12 +33,12 @@ class CheckMachine:
 
         return username, password
 
-    def login(self, username, password):
+    def login(self, username, password, stat=Status.MUMBLE):
         sess = get_initialized_session()
         r = sess.post(f'{self.url}/api/login', json={'username': username, 'password': password})
         self.c.check_response(r, 'Could not login')
         data = self.c.get_text(r, 'Could not login')
-        self.c.assert_in('User', data, 'Invalid page after login')
+        self.c.assert_in('User', data, 'Invalid page after login', status=stat)
         return sess
 
     def add_item(self, sess, name, description, cost, in_stock):
@@ -97,4 +99,42 @@ class CheckMachine:
         self.c.check_response(r, 'Could not send message')
         data = self.c.get_text(r, 'Could not send message')
         self.c.assert_in('Ok', data, 'Could not send message')
+        return data
+
+    def buy_item(self, name):
+        pass
+
+    def get_my_comments(self, username):
+        data = json.dumps({'action': 'get_my_comments', 'data': username})
+        self.c.ws.send(data)
+        resp = self.c.ws.recv()
+        return resp
+
+    def get_report(self, object_id, private_key, stat=Status.MUMBLE):
+        data = json.dumps({'action': 'get_report', 'data': object_id})
+        self.c.ws.send(data)
+        resp = self.c.ws.recv()
+        try:
+            data = json.loads(resp)
+        except json.JSONDecodeError:
+            self.c.cquit(Status.MUMBLE, 'Invalid json response to get_report', f'Got response {resp}')
+
+        self.c.assert_in('Response', data, 'Invalid response to get_report', status=stat)
+        self.c.assert_in('report', data['Response'], 'Invalid response to get_report', status=stat)
+        self.c.assert_in('encrypted_text', data['Response']['report'], 'Invalid response to get_report', status=stat)
+        text = data['Response']['report']['encrypted_text']
+        try:
+            enc_text = base64.b64decode(text)
+
+            des = DES.new(private_key.encode(), DES.MODE_ECB)
+            data = des.decrypt(enc_text).decode()
+
+            return data
+        except Exception as e:
+            self.c.cquit(stat, 'Invalid encrypted text in report', f'Got decode exception {e}')
+
+    def get_transactions(self, sess, stat=Status.MUMBLE):
+        r = sess.get(f'{self.url}/api/get_transactions')
+        self.c.check_response(r, 'Could not get transactions')
+        data = self.c.get_text(r, 'Could not get transactions', status=stat)
         return data

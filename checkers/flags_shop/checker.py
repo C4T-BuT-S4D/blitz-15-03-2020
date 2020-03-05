@@ -37,7 +37,7 @@ class Checker(BaseChecker):
 
     def put(self, flag_id, flag, vuln):
         vuln = int(vuln)
-        if vuln == 1:
+        if vuln == 4:
             username, password = self.mch.register()
             s = self.mch.login(username, password)
             # add real flag
@@ -62,7 +62,7 @@ class Checker(BaseChecker):
 
             self.cquit(Status.OK, f'{fake_name}:{fake_description}')
 
-        elif vuln == 2:
+        elif vuln == 1:
             username = rnd_username()
             ws = self.mch.get_ws_conn()
             ws.recv()
@@ -70,7 +70,7 @@ class Checker(BaseChecker):
 
             self.cquit(Status.OK, f'{username}')
 
-        elif vuln == 3:
+        elif vuln == 2:
             username = rnd_username()
             email = rnd_string(20)
             ws = self.mch.get_ws_conn()
@@ -84,7 +84,7 @@ class Checker(BaseChecker):
 
             self.cquit(Status.OK, f'{object_id}:{private_key}')
 
-        elif vuln == 4:
+        elif vuln == 3:
             sender, sender_pass = self.mch.register()
             receiver, receiver_pass = self.mch.register()
             sender_sess = self.mch.login(sender, sender_pass)
@@ -95,12 +95,38 @@ class Checker(BaseChecker):
         self.cquit(Status.ERROR, f'PUT error', f'Invalid vuln number')
 
     def get(self, flag_id, flag, vuln):
-        if vuln == 1:
+        vuln = int(vuln)
+
+        if vuln == 4:
             username, password = self.mch.register()
             sess = self.mch.login(username, password)
-            # TODO: finish it...
 
-        self.cquit(Status.OK)
+            # TODO: remove this vuln?
+            self.cquit(Status.OK)
+        elif vuln == 1:
+            ws = self.mch.get_ws_conn()
+            ws.recv()
+            data = self.mch.get_my_comments(username=flag_id)
+            self.assert_in(flag, data, 'Invalid comments', status=Status.CORRUPT)
+
+            self.cquit(Status.OK)
+
+        elif vuln == 2:
+            object_id, private_key = flag_id.split(':')
+            ws = self.mch.get_ws_conn()
+            ws.recv()
+            data = self.mch.get_report(object_id=object_id, private_key=private_key, stat=Status.CORRUPT)
+            self.assert_in(flag, data, 'No flag in report', status=Status.CORRUPT)
+            self.cquit(Status.OK)
+
+        elif vuln == 3:
+            username, password = flag_id.split(':')
+            sess = self.mch.login(username, password, stat=Status.CORRUPT)
+            data = self.mch.get_transactions(sess, stat=Status.CORRUPT)
+            self.assert_in(flag, data, 'No flag in transactions', status=Status.CORRUPT)
+            self.cquit(Status.OK)
+
+        self.cquit(Status.ERROR, f'GET error', f'Invalid vuln number')
 
 
 if __name__ == '__main__':
