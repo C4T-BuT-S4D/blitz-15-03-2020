@@ -6,14 +6,20 @@ services:
     restart: on-failure
 
   redis:
-    image: 'bitnami/redis:latest'
+    image: bitnami/redis:latest
     restart: always
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
 
   postgre:
-    image: 'postgres:latest'
+    image: postgres:latest
     restart: always
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - DEBUG=false
+      - DB_USER=postgres
+      - DB_PASS=postgres
+      - DB_NAME=postgres
 
   mysql:
     image: mysql:5.7
