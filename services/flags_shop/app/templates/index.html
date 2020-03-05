@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+  	<title>Flags.Shop</title>
+		<meta charset="utf-8">
+		<meta name="description" content="There you can buy some flags.">
+		<link rel="stylesheet" href="../static/style.css">
+		<link rel="stylesheet" href="../static/alertify.css">
+		<link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+	</head>
+<body>
+	<header>
+		<a href="/">
+			<div class="header-img">
+			</div>
+		</a>
+		<div class="nav-menu">
+			<span class="nav-item city">
+					<a href="users">Users</a>
+			</span>
+			<span class="nav-item shops">
+					<a href="flags">Flags</a>
+			</span>
+			<span class="nav-item buyers">
+					<a href="comment_board">Comment Board</a>
+			</span>
+			<span class="nav-item info">
+					<a href="report_board">Report Board</a>
+			</span>
+		</div>
+	</header>
+	<main>
+		<div class="auth">
+			<span class="auth-text">Sign In</span>
+				<p>
+					<input type="text" class="login-field" style='width:100%' id="input-username" placeholder="Your login">
+				</p>
+				<p>
+					<input type="text" class="password-field" style='width:100%' id="input-password" placeholder="Your password">
+				</p>
+				<input class="submit-button" onClick="join()" type="submit" value="Join">
+				<a href="register"><span class="register-button">Register >></span></a>
+		</div> 
+	</main>
+	<script src="../static/alertify.js"></script>
+	<script src="http://code.jquery.com/jquery-latest.js"></script>
+	<script src="../static/login.js"></script>
+</body>
+</html>

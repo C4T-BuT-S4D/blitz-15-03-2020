@@ -1,0 +1,38 @@
+version: '2.4'
+
+services:
+  backend:
+    build: .
+    restart: on-failure
+
+  redis:
+    image: 'bitnami/redis:latest'
+    restart: always
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+
+  postgre:
+    image: 'postgres:latest'
+    restart: always
+
+  mysql:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123qwe
+      MYSQL_DATABASE: flags_shop
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 123qwe
+
+  mongo:
+    image: mongo:3.4
+    command: [--smallfiles]
+
+  nginx:
+    image: nginx:1.15.5
+    volumes:
+      - ./nginx/app.conf:/etc/nginx/conf.d/default.conf
+      - ./app/templates:/front:ro
+    restart: always
+    ports:
+      - "9090:80"
