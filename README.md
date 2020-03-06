@@ -1,7 +1,7 @@
 # blitz-15-03-2020
 First C4T BuT S4D Blitz sources
 
-[![Build Status](https://travis-ci.com/pomo-mondreganto/flags_shop.svg?token=MNcdvgmffxEhzUa3dbLJ&branch=master)](https://travis-ci.com/pomo-mondreganto/flags_shop)
+[![Build Status](https://travis-ci.com/pomo-mondreganto/blitz-15-03-2020.svg?token=MNcdvgmffxEhzUa3dbLJ&branch=master)](https://travis-ci.com/pomo-mondreganto/blitz-15-03-2020)
 
 ## Results
 
