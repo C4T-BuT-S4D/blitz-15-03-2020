@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -e
+
+sleep 5
 python init_db.py
 
 ## uncomment for simple deploy
