@@ -1,16 +1,15 @@
 FROM python:3.8
 
-COPY requirements.txt /
-WORKDIR /
-RUN pip install gunicorn
+ADD requirements.txt /requirements.txt
+RUN pip install uvloop gunicorn
 RUN pip install -r requirements.txt
 
-COPY app/main.py /
-COPY app/init_db.py /
-COPY start.sh /
+ADD app/main.py /main.py
+ADD app/init_db.py /init_db.py
+ADD start.sh /start.sh
 
 ADD app /app
 ADD config /config
 
-RUN chmod +x start.sh
-CMD ["./start.sh"]
+RUN chmod +x /start.sh
+CMD ["/start.sh"]

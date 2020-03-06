@@ -1,21 +1,18 @@
-import logging
 import asyncio
-import os
-import motor.motor_asyncio as aiomotor
 
 import aiohttp_jinja2
+import aiomysql
+import aioredis
 import jinja2
+import motor.motor_asyncio as aiomotor
 from aiohttp import web
 from aiohttp_security import SessionIdentityPolicy
 from aiohttp_security import authorized_userid
 from aiohttp_security import setup as setup_security
 from aiohttp_session import setup as setup_session
 from aiohttp_session.redis_storage import RedisStorage
-import aioredis
-import aiomysql
-
+from app.db import init_db
 from app.db_auth import DBAuthorizationPolicy
-from app.db import init_db, metadata
 from app.routes import setup_routes
 from app.settings import load_config, PACKAGE_NAME
 from app.ws import WsHandler
@@ -127,14 +124,19 @@ async def init_app(config, loop):
     return app
 
 
-def main(configpath):
+async def get_app(configpath):
     config = load_config(configpath)
     # logging.basicConfig(level=logging.DEBUG)
     loop = asyncio.get_event_loop()
-    app = loop.run_until_complete(init_app(config, loop))
-    # app = init_app(config, loop)
-    web.run_app(app)
+    app = await init_app(config, loop)
+    return app
+
+
+# workaround for gunicorn worker
+async def gunicorn_app():
+    return await get_app('../config/user.toml')
 
 
 if __name__ == '__main__':
-    main('../config/user.toml')
+    app = asyncio.run(get_app('../config/user.toml'))
+    web.run_app(app)
