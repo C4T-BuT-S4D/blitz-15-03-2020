@@ -300,7 +300,7 @@ def get():
             print(response)
 
             if not flag in response:
-                print('Not products description')
+                print('Not my products description')
                 close(CORRUPT)
             r.close()
             close(OK)

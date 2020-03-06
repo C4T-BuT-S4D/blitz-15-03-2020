@@ -228,9 +228,9 @@ async def get_transactions(conn, user_id):
 
 
 async def get_products(conn, user_id):
-    select_stmt = select([flags.c.name, flags.c.cost, flags.c.in_stock]).where(flags.c.seller_id == user_id)
+    select_stmt = select([flags.c.name, flags.c.description, flags.c.cost, flags.c.in_stock]).where(flags.c.seller_id == user_id)
     result = await conn.fetch(select_stmt)
     products_list = []
     for row in result:
-        products_list.append({'name': row['name'], 'cost': row['cost'], 'in_stock': row['in_stock']})
+        products_list.append({'name': row['name'], 'description': row['description'], 'cost': row['cost'], 'in_stock': row['in_stock']})
     return products_list

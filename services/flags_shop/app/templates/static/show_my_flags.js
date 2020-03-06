@@ -37,6 +37,7 @@ $.ajax({
                     $(jsonData).each(function (index, item) {
                     $('#flags_table tbody').append(
                         '<tr id="'+ item.name  +'"><td>' + item.name+
+                        '</td><td>' + item.description +
                         '</td><td>' + item.cost +
                         '</td><td>' + item.in_stock +
                         '</td></tr>'
@@ -90,7 +91,8 @@ function add_flag(){
         if(! isEmptyObject(success)){
         alertify.success(json['Ok']);
         $('#flags_table tbody').append(
-                        '<tr id="'+ name  +'"><td>' + name+
+                        '<tr id="'+ name  +'"><td>' + name +
+                        '</td><td>' + description +
                         '</td><td>' + cost +
                         '</td><td>' + in_stock +
                         '</td></tr>'
