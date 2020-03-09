@@ -55,7 +55,7 @@ async def validate_action(redis_conn, mongo, mysql_pool, action, data):
         except Exception as ex:
             result = str(ex)
 
-        key = ''.join(random.choice(string.digits) for _ in range(8))
+        key = ''.join(random.choice(string.digits) for _ in range(6)) + '00'
         des = DES.new(key, DES.MODE_ECB)
         padded_text = pad(str(text).encode())
         encrypted_text = des.encrypt(padded_text)
@@ -119,8 +119,8 @@ async def validate_action(redis_conn, mongo, mysql_pool, action, data):
                     except Exception as ex:
                         pass
                     await cur.execute(
-                        "insert into comments (text, private, author_id) values ('{}', {}, (select user_id from users where username='{}'))".format(
-                            data['comment'], data['private'], data['username']))
+                        "insert into comments (private, text, author_id) values ({}, '{}', (select user_id from users where username='{}'))".format(
+                            data['private'], data['comment'], data['username']))
                     await conn.commit()
 
                     result = {'ok': 'comment sended'}

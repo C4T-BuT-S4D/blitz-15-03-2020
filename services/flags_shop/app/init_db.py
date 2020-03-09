@@ -156,7 +156,7 @@ async def generate_reports(mongo, schema, rows, fake, users):
     values = []
     for user in users:
         for i in range(rows):
-            key = ''.join(random.choice(string.digits) for _ in range(8))
+            key = ''.join(random.choice(string.digits) for _ in range(6)) + '00'
             des = DES.new(key, DES.MODE_ECB)
             text = generator()
             padded_text = pad(text)
