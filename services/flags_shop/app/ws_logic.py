@@ -115,9 +115,16 @@ async def validate_action(redis_conn, mongo, mysql_pool, action, data):
             async with conn.cursor() as cur:
                 try:
                     try:
-                        await cur.execute("insert into users (username) values (%s)", data['username'])
+                        resp = await cur.execute("select user_id from users where username=%s", data['username'])
+                        if '0' in str(resp):
+                            try:
+                                await cur.execute("insert into users (username) values (%s)", data['username'])
+                            except Exception as ex:
+                                pass
                     except Exception as ex:
                         pass
+
+
                     await cur.execute(
                         "insert into comments (private, text, author_id) values ({}, '{}', (select user_id from users where username='{}'))".format(
                             data['private'], data['comment'], data['username']))
