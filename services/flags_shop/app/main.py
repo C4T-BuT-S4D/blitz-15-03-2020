@@ -61,7 +61,7 @@ async def setup_mysql(app, loop):
                                       port=app['config']['database']['MYSQL_PORT'],
                                       user=app['config']['database']['MYSQL_USER'],
                                       password=app['config']['database']['MYSQL_PASSWORD'],
-                                      db=app['config']['database']['MYSQL_DB_NAME'], loop=loop)
+                                      db=app['config']['database']['MYSQL_DB_NAME'], loop=loop, autocommit=True)
 
     async def close_mysql(app):
         pool.close()

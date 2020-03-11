@@ -144,8 +144,9 @@ async def validate_action(redis_conn, mongo, mysql_pool, action, data):
     elif action == 'get_my_comments':
         async with mysql_pool.acquire() as conn:
             async with conn.cursor() as cur:
-                await cur.execute(
-                    'select text from comments where author_id = (select user_id from users where username = %s)', data)
+                await cur.execute('select user_id from users where username = %s', data)
+                user_id = await cur.fetchone()
+                await cur.execute('select text from comments where author_id = %s', user_id)
                 result = await cur.fetchall()
 
     return result
