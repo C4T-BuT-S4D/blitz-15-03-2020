@@ -308,7 +308,6 @@ def get():
             print(str(e))
             close(MUMBLE)
 
-
     elif vuln == 2:
         try:
             ws = create_connection(url, timeout=5)

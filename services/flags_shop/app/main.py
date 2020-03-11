@@ -11,6 +11,7 @@ from aiohttp_security import authorized_userid
 from aiohttp_security import setup as setup_security
 from aiohttp_session import setup as setup_session
 from aiohttp_session.redis_storage import RedisStorage
+
 from app.db import init_db
 from app.db_auth import DBAuthorizationPolicy
 from app.routes import setup_routes
@@ -132,11 +133,9 @@ async def get_app(configpath):
     return app
 
 
-# workaround for gunicorn worker
-async def gunicorn_app():
+async def app_wrapper():
     return await get_app('../config/user.toml')
 
 
 if __name__ == '__main__':
-    app = asyncio.run(get_app('../config/user.toml'))
-    web.run_app(app)
+    web.run_app(app_wrapper())

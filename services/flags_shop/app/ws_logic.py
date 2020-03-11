@@ -1,6 +1,11 @@
-from bson import ObjectId
+import base64
+import bson
+import json
+import random
+import string
+
 from Crypto.Cipher import DES
-import random, string, base64, bson, json
+from bson import ObjectId
 
 ACTIONS = ['get_cookie', 'get_cookies', 'get_comments', 'get_my_comments', 'send_comment', 'get_reports', 'get_report',
            'create_report']
@@ -114,23 +119,19 @@ async def validate_action(redis_conn, mongo, mysql_pool, action, data):
         async with mysql_pool.acquire() as conn:
             async with conn.cursor() as cur:
                 try:
-                    try:
-                        resp = await cur.execute("select user_id from users where username=%s", data['username'])
-                        if '0' in str(resp):
-                            try:
-                                await cur.execute("insert into users (username) values (%s)", data['username'])
-                            except Exception as ex:
-                                pass
-                    except Exception as ex:
-                        pass
+                    await cur.execute("select count(*) from users where username=%s;", data['username'])
+                    was_registered, = await cur.fetchone()
 
+                    if not was_registered:
+                        await cur.execute("insert into users (username) values (%s)", data['username'])
 
                     await cur.execute(
                         "insert into comments (private, text, author_id) values ({}, '{}', (select user_id from users where username='{}'))".format(
                             data['private'], data['comment'], data['username']))
+
                     await conn.commit()
 
-                    result = {'ok': 'comment sended'}
+                    result = {'ok': 'comment sent'}
                 except Exception as ex:
                     result = str(ex)
 

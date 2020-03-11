@@ -101,8 +101,24 @@ class CheckMachine:
         self.c.assert_in('Ok', data, 'Could not send message')
         return data
 
-    def buy_item(self, name):
-        pass
+    def buy_item(self, sess, name, stat=Status.MUMBLE):
+        r = sess.post(f'{self.url}/api/buy', json={'name': name})
+        self.c.check_response(r, 'Could not buy item')
+        data = self.c.get_text(r, 'Could not buy item', status=stat)
+        self.c.assert_in('Ok', data, 'Could not buy item', status=stat)
+        return data
+
+    def get_orders(self, sess, stat=Status.MUMBLE):
+        r = sess.get(f'{self.url}/api/get_orders')
+        self.c.check_response(r, 'Could not get orders')
+        data = self.c.get_text(r, 'Could not get orders', status=stat)
+        return data
+
+    def get_my_flags(self, sess, stat=Status.MUMBLE):
+        r = sess.get(f'{self.url}/api/get_my_flags')
+        self.c.check_response(r, 'Could not get orders')
+        data = self.c.get_text(r, 'Could not get orders', status=stat)
+        return data
 
     def get_my_comments(self, username):
         data = json.dumps({'action': 'get_my_comments', 'data': username})

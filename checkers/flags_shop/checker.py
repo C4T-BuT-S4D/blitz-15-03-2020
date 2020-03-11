@@ -27,6 +27,8 @@ class Checker(BaseChecker):
             self.cquit(Status.DOWN, 'Connection error', 'Got requests connection error')
         except websocket._exceptions.WebSocketTimeoutException:
             self.cquit(Status.DOWN, 'Websocket timeout', 'Got WebSocketTimeoutException')
+        except websocket._exceptions.WebSocketBadStatusException:
+            self.cquit(Status.DOWN, 'Websocket bad status', 'Got WebSocketBadStatusException')
         finally:
             if self.ws:
                 self.ws.close()
@@ -37,33 +39,9 @@ class Checker(BaseChecker):
 
     def put(self, flag_id, flag, vuln):
         vuln = int(vuln)
-        if vuln == 4:
-            username, password = self.mch.register()
-            s = self.mch.login(username, password)
-            # add real flag
-            self.mch.add_item(
-                sess=s,
-                name=rnd_string(20),
-                description=flag,
-                cost=((1 << 31) - 1),
-                in_stock=random.randint(1000, 2000),
-            )
 
-            # add fake item
-            fake_name = rnd_string(random.randint(20, 30))
-            fake_description = rnd_string(random.randint(40, 60))
-            self.mch.add_item(
-                sess=s,
-                name=fake_name,
-                description=fake_description,
-                cost=random.randint(1, 100),
-                in_stock=random.randint(1000, 20000),
-            )
-
-            self.cquit(Status.OK, f'{fake_name}:{fake_description}')
-
-        elif vuln == 1:
-            username = rnd_username()
+        if vuln == 1:
+            username = rnd_string(40)
             ws = self.mch.get_ws_conn()
             ws.recv()
             self.mch.send_comment(username=username, comment=flag, private='TRUE')
@@ -92,23 +70,44 @@ class Checker(BaseChecker):
 
             self.cquit(Status.OK, f'{receiver}:{receiver_pass}')
 
+        elif vuln == 4:
+            username, password = self.mch.register()
+            s = self.mch.login(username, password)
+
+            # add real flag
+            flag_name = rnd_string(random.randint(20, 30))
+            flag_description = f'{rnd_string(random.randint(5, 10))} {flag} {rnd_string(random.randint(5, 10))}'
+            self.mch.add_item(
+                sess=s,
+                name=flag_name,
+                description=flag_description,
+                cost=((1 << 31) - 1) - random.randint(0, 10000),
+                in_stock=random.randint(1000, 20000),
+            )
+
+            # add fake item
+            fake_name = rnd_string(random.randint(20, 30))
+            fake_description = rnd_string(random.randint(30, 50))
+            self.mch.add_item(
+                sess=s,
+                name=fake_name,
+                description=fake_description,
+                cost=random.randint(1, 20),
+                in_stock=random.randint(1000, 20000),
+            )
+
+            self.cquit(Status.OK, f'{fake_name}:{fake_description}:{username}:{password}')
+
         self.cquit(Status.ERROR, f'PUT error', f'Invalid vuln number')
 
     def get(self, flag_id, flag, vuln):
         vuln = int(vuln)
 
-        if vuln == 4:
-            username, password = self.mch.register()
-            sess = self.mch.login(username, password)
-
-            # TODO: remove this vuln?
-            self.cquit(Status.OK)
-        elif vuln == 1:
+        if vuln == 1:
             ws = self.mch.get_ws_conn()
             ws.recv()
             data = self.mch.get_my_comments(username=flag_id)
             self.assert_in(flag, data, 'Invalid comments', status=Status.CORRUPT)
-
             self.cquit(Status.OK)
 
         elif vuln == 2:
@@ -124,6 +123,22 @@ class Checker(BaseChecker):
             sess = self.mch.login(username, password, stat=Status.CORRUPT)
             data = self.mch.get_transactions(sess, stat=Status.CORRUPT)
             self.assert_in(flag, data, 'No flag in transactions', status=Status.CORRUPT)
+            self.cquit(Status.OK)
+
+        elif vuln == 4:
+            fake_name, fake_flag, owner_username, owner_password = flag_id.split(':')
+            username, password = self.mch.register()
+            buyer_sess = self.mch.login(username, password)
+
+            self.mch.buy_item(buyer_sess, fake_name)
+            orders = self.mch.get_orders(buyer_sess, stat=Status.CORRUPT)
+            self.assert_in(fake_flag, orders, 'Invalid orders', status=Status.CORRUPT)
+
+            owner_sess = self.mch.login(owner_username, owner_password, stat=Status.CORRUPT)
+            flags = self.mch.get_my_flags(owner_sess, stat=Status.CORRUPT)
+            self.assert_in(fake_flag, flags, 'Invalid my flags', status=Status.CORRUPT)
+            self.assert_in(flag, flags, 'Invalid my flags', status=Status.CORRUPT)
+
             self.cquit(Status.OK)
 
         self.cquit(Status.ERROR, f'GET error', f'Invalid vuln number')
