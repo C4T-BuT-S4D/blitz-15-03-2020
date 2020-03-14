@@ -1,17 +1,26 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import json, uuid, re, base64
-from websocket import create_connection
-from Crypto.Cipher import DES
+import base64
+import json
+import re
+import sys
+import uuid
 
-url = 'ws://localhost:9090/api/ws'
+from Crypto.Cipher import DES
+from websocket import create_connection
+
+if len(sys.argv) < 2:
+    print(f'Usage: {sys.argv[0]} HOST')
+    exit(0)
+
+ip = sys.argv[1]
+url = f'ws://{ip}:9090/api/ws'
 
 ws = create_connection(url, timeout=5)
 ws.recv()
 
 username = uuid.uuid4().hex
-
 
 data = json.dumps({'action': 'get_reports', 'data': '*'})
 ws.send(data)

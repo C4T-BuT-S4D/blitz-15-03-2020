@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import requests, requests.cookies, json
+import sys
+
+import json
+import requests.cookies
 from websocket import create_connection
 
+if len(sys.argv) < 2:
+    print(f'Usage: {sys.argv[0]} HOST')
+    exit(0)
 
-url = 'ws://localhost:9090/api/ws'
+ip = sys.argv[1]
+url = f'ws://{ip}:9090/api/ws'
 
 ws = create_connection(url, timeout=5)
 ws.recv()
@@ -17,8 +24,8 @@ response = json.loads(ws.recv())
 
 jar = requests.cookies.RequestsCookieJar()
 
-url_orders = 'http://localhost:9090/api/get_orders'
-url_transactions = 'http://localhost:9090/api/get_transactions'
+url_orders = f'http://{ip}:9090/api/get_orders'
+url_transactions = f'http://{ip}:9090/api/get_transactions'
 orders_set = set()
 transactions_set = set()
 

