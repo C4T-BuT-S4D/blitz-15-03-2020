@@ -1,7 +1,7 @@
 #!/bin/bash
 
 VULNS=4
-CHECKS=500
+CHECKS=10
 
 print_output() {
   echo "stdout:"

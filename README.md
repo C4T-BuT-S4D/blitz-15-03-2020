@@ -5,7 +5,9 @@ First C4T BuT S4D Blitz sources
 
 ## Results
 
->TODO
+![Top](scoreboard/top.png)
+
+[Full scoreboard](scoreboard/full.png)
 
 ## Services
 
