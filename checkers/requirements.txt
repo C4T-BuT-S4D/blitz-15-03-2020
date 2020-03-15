@@ -1,0 +1,5 @@
+websocket_client
+requests
+checklib
+pycrypto
+gevent
