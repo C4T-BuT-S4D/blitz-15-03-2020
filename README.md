@@ -1,5 +1,5 @@
 # blitz-15-03-2020
-First C4T BuT S4D Blitz sources
+First C4T BuT S4D Blitz sources, **authored by [@lucky624](https://github.com/lucky624)**.
 
 [![Build Status](https://travis-ci.com/pomo-mondreganto/blitz-15-03-2020.svg?token=MNcdvgmffxEhzUa3dbLJ&branch=master)](https://travis-ci.com/pomo-mondreganto/blitz-15-03-2020)
 
@@ -20,3 +20,4 @@ First C4T BuT S4D Blitz sources
 
 - DevOps, infrastructure author: [@pomo-mondreganto](https://github.com/pomo-mondreganto).
 - Checksystem: [ForcAD](https://github.com/pomo-mondreganto/ForcAD)
+- special thanks to [@lucky624](https://github.com/lucky624) for the great service
