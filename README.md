@@ -1,7 +1,7 @@
 # blitz-15-03-2020
 First C4T BuT S4D Blitz sources, **authored by [@lucky624](https://github.com/lucky624)**.
 
-[![Build Status](https://travis-ci.com/pomo-mondreganto/blitz-15-03-2020.svg?token=MNcdvgmffxEhzUa3dbLJ&branch=master)](https://travis-ci.com/pomo-mondreganto/blitz-15-03-2020)
+[![Build Status](https://travis-ci.com/C4T-BuT-S4D/blitz-15-03-2020.svg?branch=master)](https://travis-ci.com/C4T-BuT-S4D/blitz-15-03-2020)
 
 ## Results
 
